@@ -1,11 +1,13 @@
 interface Prop{
-  strike:number
+  strike:number;
+  isatm:boolean
 }
 
-const OpStrike = ({strike}:Prop) => {
+const OpStrike = ({strike,isatm}:Prop) => {
   return (
     <>
-      <div className="border border-primary d-flex justify-content-center p-1">
+      <div className={isatm?"border border-primary d-flex justify-content-center p-1 bg-info-subtle text-emphasis-info":
+      "border border-primary d-flex justify-content-center p-1 "}>
         <div
           className="text-end border border-primary border-opacity-50 rounded"
           style={{ width: "400px" }}
@@ -19,8 +21,8 @@ const OpStrike = ({strike}:Prop) => {
           LTP
         </div>
         <div
-          className="text-center border border-primary border-opacity-50 rounded"
-          style={{ width: "70px" }}
+          className="ext-center border border-primary border-opacity-50 rounded"
+          style={{ width: "70px" }} 
         >
           {strike}
         </div>

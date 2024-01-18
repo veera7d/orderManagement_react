@@ -10,16 +10,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/binary-parser": "^1.5.4",
+    "binary-parser": "^2.2.1",
     "bootstrap": "^5.3.2",
+    "buffer": "^6.0.3",
+    "idb": "^8.0.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-use-websocket": "^4.5.0",
+    "smartapi-javascript": "^1.0.20",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-beautiful-dnd": "^13.1.7",
     "@types/react-dom": "^18.2.15",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
