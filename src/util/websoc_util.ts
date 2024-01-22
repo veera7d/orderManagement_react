@@ -16,7 +16,8 @@ const exchange_type = (exchange: any) => {
 };
 
 export const build_websoc_ltpreq = (token_obj: any, subscribe = true) => {
-  console.log("token_obj", token_obj);
+  if (token_obj === null || token_obj === undefined) return null;
+  //   console.log("token_obj", token_obj);
   return {
     correlationID: token_obj.token,
     action: subscribe ? 1 : 0,
@@ -31,6 +32,56 @@ export const build_websoc_ltpreq = (token_obj: any, subscribe = true) => {
     },
   };
 };
+
+export const build_websoc_ltpAllReq = (
+  token_obj_list: any,
+  subscribe = true
+) => {
+  if (token_obj_list === null || token_obj_list === undefined) return null;
+  const result = [];
+  const groupedData: any = [];
+  for (const item of token_obj_list) {
+    const exchSeg = item["exch_seg"];
+    groupedData[exchSeg] = groupedData[exchSeg] || [];
+    groupedData[exchSeg].push(item["token"]);
+  }
+  for (const [exchSeg, tokens] of Object.entries(groupedData)) {
+    result.push({
+      exchangeType: exchSeg,
+      tokens: tokens,
+    });
+  }
+//   console.log(result);
+
+  return {
+    correlationID: "ltpAll",
+    action: subscribe ? 1 : 0,
+    params: {
+      mode: 1,
+      tokenList: result,
+    },
+  };
+};
+
+export async function get_ltp(message: any) {
+  if (message === null) return null;
+  const subscription_mode = await get_subscription_mode(message);
+  // console.log("ltp", LTP(message).last_traded_price);
+  if (subscription_mode === 1) {
+    //this.update_ltp(file_data, LTP(lastMessage));
+    let ltp_obj = await LTP(message);
+    console.log("ltp", ltp_obj.last_traded_price / 100);
+    return [ltp_obj.token, ltp_obj.last_traded_price / 100];
+  }
+}
+
+async function get_subscription_mode(message: any) {
+  const arrayBuffer1 = await message.arrayBuffer();
+  const dataView = new DataView(arrayBuffer1);
+  const int8Value = dataView.getInt8(0);
+  //console.log(int8Value);
+  return int8Value;
+}
 
 export function QUOTE(buf: any) {
   const quote = new Parser()
