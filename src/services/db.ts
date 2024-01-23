@@ -1,112 +1,163 @@
-import { openDB, DBSchema } from "idb";
+import React, { useEffect, useState } from "react";
 
-interface MyDB extends DBSchema {
-  lists: {
-    key: string;
-    value: tokenI;
-  };
-}
-interface tokenI {
-  token: string;
-  symbol: string;
+interface MyObject {
+  id?: number;
   name: string;
-  expiry: string;
-  strike: string;
-  lotsize: string;
-  instrumenttype: string;
-  exch_seg: string;
-  tick_size: string;
+  age: number;
 }
 
-//function to add list of objects of kind MyDB to the database
-export const addList = async (list: tokenI[]) => {
-  const db = await openDB<MyDB>("my-db", 1, {
-    upgrade(db) {
-      db.createObjectStore("lists");
-    },
-  });
-  if (db === null) {
-    return; // or handle the error accordingly
-  }
-  console.log("listttttt", list);
-  const tx = db.transaction("lists", "readwrite");
-  list = [
-    {
-      token: "72233",
-      symbol: "BANKNIFTY29FEB2446300PE",
-      name: "BANKNIFTY",
-      expiry: "29FEB2024",
-      strike: "4630000.000000",
-      lotsize: "15",
-      instrumenttype: "OPTIDX",
-      exch_seg: "NFO",
-      tick_size: "5.000000",
-    },
-    {
-      token: "46825",
-      symbol: "FINNIFTY09JAN2422100CE",
-      name: "FINNIFTY",
-      expiry: "09JAN2024",
-      strike: "2210000.000000",
-      lotsize: "40",
-      instrumenttype: "OPTIDX",
-      exch_seg: "NFO",
-      tick_size: "5.000000",
-    },
-    {
-      token: "55781",
-      symbol: "BANKNIFTY25JAN2444700CE",
-      name: "BANKNIFTY",
-      expiry: "25JAN2024",
-      strike: "4470000.000000",
-      lotsize: "15",
-      instrumenttype: "OPTIDX",
-      exch_seg: "NFO",
-      tick_size: "5.000000",
-    },
-  ];
-  try {
-    // await deleteAll();
-    await Promise.all(
-      list.map((item) => {
-        tx.store.add(item, item.symbol);
-      })
+const useIndexedDB = (dbName: string, storeName: string) => {
+  const [db, setDb] = useState<IDBDatabase | null>(null);
+
+  useEffect(() => {
+    const initializeDB = async () => {
+      const request = indexedDB.open(dbName, 1);
+
+      request.onerror = (event) => {
+        console.error(
+          "Error opening IndexedDB:",
+          (event.target as IDBOpenDBRequest).error
+        );
+      };
+
+      request.onsuccess = (event) => {
+        const database = (event.target as IDBRequest<IDBDatabase>).result;
+        setDb(database);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const database = (event.target as IDBRequest<IDBDatabase>).result;
+        if (!database.objectStoreNames.contains(storeName)) {
+          database.createObjectStore(storeName, {
+            keyPath: "id",
+            autoIncrement: true,
+          });
+        }
+      };
+    };
+
+    initializeDB();
+  }, [dbName, storeName]);
+
+  const addObject = async (object: MyObject) => {
+    if (!db) return;
+
+    return new Promise<number>((resolve, reject) => {
+      const transaction = db.transaction([storeName], "readwrite");
+      const objectStore = transaction.objectStore(storeName);
+
+      const request = objectStore.add(object);
+
+      request.onsuccess = () => {
+        resolve(request.result as number);
+      };
+
+      request.onerror = (event: Event) => {
+        console.error(
+          "Error adding object to IndexedDB:",
+          (event.target as IDBRequest<IDBValidKey>).error
+        );
+        reject((event.target as IDBRequest<IDBValidKey>).error);
+      };
+    });
+  };
+
+  const getAllObjects = async () => {
+    if (!db) return [];
+
+    return new Promise<MyObject[]>((resolve, reject) => {
+      const transaction = db.transaction([storeName], "readonly");
+      const objectStore = transaction.objectStore(storeName);
+
+      const request = objectStore.getAll();
+
+      request.onsuccess = (event: Event) => {
+        resolve(request.result as MyObject[]);
+      };
+
+      request.onerror = (event: Event) => {
+        console.error(
+          "Error fetching objects from IndexedDB:",
+          (event.target as IDBRequest).error
+        );
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  };
+
+  //get objects by name and expiry
+  const getObjects = async (name: string, expiry: string) => {
+    if (!db) return [];
+
+    return new Promise<MyObject[]>((resolve, reject) => {
+      const transaction = db.transaction([storeName], "readonly");
+      const objectStore = transaction.objectStore(storeName);
+
+      const request = objectStore.getAll();
+
+      request.onsuccess = (event: Event) => {
+        // let out = request.result.
+        resolve(request.result as MyObject[]);
+      };
+
+      request.onerror = (event: Event) => {
+        console.error(
+          "Error fetching objects from IndexedDB:",
+          (event.target as IDBRequest).error
+        );
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  };
+
+  //get unique expirys with name
+  const getUniqueExpirys = async (name: string) => {
+    if (!db) return [];
+
+    return new Promise<MyObject[]>((resolve, reject) => {
+      const transaction = db.transaction([storeName], "readonly");
+      const objectStore = transaction.objectStore(storeName);
+
+      const request = objectStore.getAll();
+
+      request.onsuccess = (event: Event) => {
+        resolve(request.result as MyObject[]);
+      };
+
+      request.onerror = (event: Event) => {
+        console.error(
+          "Error fetching objects from IndexedDB:",
+          (event.target as IDBRequest).error
+        );
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  };
+
+  return { addObject, getAllObjects, getObjects };
+};
+
+// Example usage in a React component
+const MyComponent: React.FC = () => {
+  const { addObject, getAllObjects } = useIndexedDB("myDB", "myStore");
+
+  useEffect(() => {
+    // Example: Add an object to IndexedDB
+    addObject({ name: "John", age: 30 }).then((id) =>
+      console.log("Object added with ID:", id)
     );
-  } catch (e) {
-    console.log("error", e);
-  }
 
-  console.log("count", await tx.store.count());
-  await tx.done;
+    // Example: Get all objects from IndexedDB
+    getAllObjects().then((objects) =>
+      console.log("All objects from IndexedDB:", objects)
+    );
+  }, [addObject, getAllObjects]);
+
+  return (
+    <>
+      <div>{/* Your component JSX */}</div>
+    </>
+  );
 };
 
-//function to get object from the database with paramaters
-export const getList = async (key: string) => {
-  const db = await openDB<MyDB>("my-db", 1);
-  if (db === null) {
-    return; // or handle the error accordingly
-  }
-  return await db.get("lists", key);
-};
-
-//function to get object from the database with paramaters
-export const getAllList = async () => {
-  const db = await openDB<MyDB>("my-db", 1);
-  if (db === null) {
-    return; // or handle the error accordingly
-  }
-  return await db.getAll("lists");
-};
-
-//function to delete all the objects from the database
-export const deleteAll = async () => {
-  const db = await openDB<MyDB>("my-db", 1);
-  if (db === null) {
-    return; // or handle the error accordingly
-  }
-  const tx = db.transaction("lists", "readwrite");
-  await tx.store.clear();
-  await tx.done;
-};
-
-export default { addList, getList, getAllList, deleteAll };
+export default MyComponent;
