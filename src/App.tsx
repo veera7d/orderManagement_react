@@ -1,3 +1,4 @@
+//https://smartapi.angelbroking.com/publisher-login?api_key=xxx
 import { useEffect, useState } from "react";
 import OptionChain from "./components/OptionChain";
 import Inputs from "./components/Inputs";
@@ -5,13 +6,6 @@ import ltp from "./services/ltp";
 import get_ATM_strike from "./util/util";
 import AllScripts from "./components/AllScripts";
 import WebSocketC from "./components/WebSocketC";
-
-interface oc_ltp_i {
-  strike: string;
-  token: string;
-  ce_ltp: number;
-  pe_ltp: number;
-}
 
 interface data_i {
   script: string;
@@ -45,6 +39,11 @@ function App() {
     exch_seg: "NSE",
     tick_size: "0.000000",
   };
+  let ltp_data_temp: { [key: string]: number } = {};
+  function set_ltp_data_temp(token: string, ltp: number) {
+    ltp_data_temp[token] = ltp;
+    // console.log("token", token, ltp);
+  }
   const [script, setScript] = useState<string>("NIFTY");
   const [data, setData] = useState<data_i[]>([
     {
@@ -71,11 +70,9 @@ function App() {
     // console.log("unique_expirys", data[0].unique_expirys);
   }, [nifty_data, banknifty_data, data]);
 
-  const [oc_ltp, setOc_ltp] = useState<oc_ltp_i[]>([]);
-  const { subscribe, unsubscribe, subscribe_all, unSubscribe_all } = WebSocketC(
-    oc_ltp,
-    setOc_ltp
-  );
+  const [oc_ltp, setOc_ltp] = useState<{ [key: string]: number }>({});
+  const { subscribe, unsubscribe, subscribe_all, unSubscribe_all } =
+    WebSocketC(set_ltp_data_temp);
   const [active_oc_data, setActive_oc_data] = useState<any[]>([]);
   const [active_exp, setActive_exp] = useState<string>();
   const [no_of_strikes_disp, setNo_of_strikes_disp] = useState<number>(10);
@@ -85,6 +82,10 @@ function App() {
   const update_allscripts = AllScripts(set_nifty_data, set_banknifty_data);
   useEffect(() => {
     update_allscripts();
+    setInterval(() => {
+      // console.log("oc_ltp", oc_ltp);
+      setOc_ltp(ltp_data_temp);
+    }, 1000);
   }, []);
 
   function set_nifty_data(_data: any) {
@@ -120,11 +121,6 @@ function App() {
         return d;
       });
     });
-  }
-
-  let token_ltp: { token: string; ltp: number }[] = [];
-  function settoket_ltp(data: { token: string; ltp: number }[]) {
-    token_ltp = data;
   }
 
   //subscribe to ltp
@@ -210,6 +206,7 @@ function App() {
           data.filter((d) => d.script === "NIFTY")[0].unique_expirys
         )}
       </p>
+      <p>ltp length: {oc_ltp.length}</p>
       <p>{active_exp}</p>
       <Inputs
         pscripts={data.map((d) => {

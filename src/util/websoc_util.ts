@@ -47,7 +47,7 @@ export const build_websoc_ltpAllReq = (
   }
   for (const [exchSeg, tokens] of Object.entries(groupedData)) {
     result.push({
-      exchangeType: exchSeg,
+      exchangeType: exchange_type(exchSeg),
       tokens: tokens,
     });
   }
@@ -70,7 +70,7 @@ export async function get_ltp(message: any) {
   if (subscription_mode === 1) {
     //this.update_ltp(file_data, LTP(lastMessage));
     let ltp_obj = await LTP(message);
-    console.log("ltp", ltp_obj.last_traded_price / 100);
+    // console.log("ltp",ltp_obj.token, ltp_obj.last_traded_price / 100);
     return [ltp_obj.token, ltp_obj.last_traded_price / 100];
   }
 }

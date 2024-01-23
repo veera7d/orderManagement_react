@@ -8,7 +8,7 @@ import {
   get_ltp,
 } from "../util/websoc_util";
 
-const WebSocketC = (oc_ltp: any, setOc_ltp: any) => {
+const WebSocketC = (set_ltp_data_temp: any) => {
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     "wss://smartapisocket.angelone.in/smart-stream?clientCode=" +
       import.meta.env.VITE_CLIENT_CODE +
@@ -37,16 +37,19 @@ const WebSocketC = (oc_ltp: any, setOc_ltp: any) => {
 
   async function update_ltp_data(lastMessage: any) {
     let ltpdata = await get_ltp(lastMessage);
-    setOc_ltp(
-      oc_ltp.map((d: any) => {
-        if (ltpdata === null || ltpdata === undefined) return d;
-        if (d.token_obj.token === ltpdata[0]) {
-          d.ltp = ltpdata[1];
-          console.log("ltp", ltpdata[0], ltpdata[1]);
-        }
-        return d;
-      })
-    );
+    if(ltpdata === null || ltpdata === undefined) return;
+    // console.log("ltpdata", ltpdata);
+    set_ltp_data_temp(ltpdata[0], ltpdata[1]);
+    // setOc_ltp(
+    //   oc_ltp.map((d: any) => {
+    //     if (ltpdata === null || ltpdata === undefined) return d;
+    //     if (d.token_obj.token === ltpdata[0]) {
+    //       d.ltp = ltpdata[1];
+    //       console.log("ltp", ltpdata[0], ltpdata[1]);
+    //     }
+    //     return d;
+    //   })
+    // );
   }
 
   useEffect(() => {
