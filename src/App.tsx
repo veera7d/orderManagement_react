@@ -39,10 +39,23 @@ function App() {
     exch_seg: "NSE",
     tick_size: "0.000000",
   };
+  let ltp_ref: { [key: string]: any } = {};
+  function add_ltp_refs(ce_pe_ref: any) {
+    ce_pe_ref.forEach((ref: any) => {
+      ltp_ref[ref[0]] = ref[1];
+    });
+  }
+  useEffect(() => {
+    // console.log("ltp_ref", ltp_ref);
+  }, [ltp_ref]);
   let ltp_data_temp: { [key: string]: number } = {};
   function set_ltp_data_temp(token: string, ltp: number) {
-    ltp_data_temp[token] = ltp;
-    // console.log("token", token, ltp);
+    // ltp_data_temp[token] = ltp;
+    console.log("token", token, ltp);
+    if (!ltp_ref[token]) return;
+    if (ltp_ref[token].current === null || ltp_ref[token].current === undefined)
+      return;
+    ltp_ref[token].current.innerHTML = ltp.toString();
   }
   const [script, setScript] = useState<string>("NIFTY");
   const [data, setData] = useState<data_i[]>([
@@ -125,6 +138,9 @@ function App() {
 
   //subscribe to ltp
   useEffect(() => {
+    // for (let i in ltp_ref) {
+    //   delete ltp_ref[i];
+    // }
     if (active_oc_data.length > 0) {
       // console.log("active_oc_data", active_oc_data.length);
       unSubscribe_all(active_oc_data);
@@ -206,7 +222,7 @@ function App() {
           data.filter((d) => d.script === "NIFTY")[0].unique_expirys
         )}
       </p>
-      <p>ltp length: {oc_ltp.length}</p>
+      <p>ltp length: {JSON.stringify(ltp_ref)}</p>
       <p>{active_exp}</p>
       <Inputs
         pscripts={data.map((d) => {
@@ -241,6 +257,7 @@ function App() {
         }
         active_oc_data={active_oc_data}
         no_of_strikes_disp={no_of_strikes_disp}
+        add_ltp_refs={add_ltp_refs}
       />
     </>
   );
