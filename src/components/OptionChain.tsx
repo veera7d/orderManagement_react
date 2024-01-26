@@ -5,6 +5,7 @@ interface data_i {
   atm: number;
   no_of_strikes_disp: number;
   active_oc_data: any;
+  add_ltp_refs: any;
 }
 
 interface opdata_i {
@@ -20,6 +21,7 @@ const OptionChain = ({
   atm,
   no_of_strikes_disp,
   active_oc_data,
+  add_ltp_refs,
 }: data_i) => {
   const [opdata, setOpdata] = useState<opdata_i[]>([]);
   useEffect(() => {
@@ -54,12 +56,15 @@ const OptionChain = ({
   }, [active_oc_data]);
   return (
     <>
-      {opdata.map((opdata: any) => {
+      {opdata.map((_opdata: any) => {
         return (
           <OpStrike
-            isatm={parseInt(opdata.strike) == atm ? true : false}
-            strike={opdata.strike}
-            key={opdata.strike}
+            isatm={parseInt(_opdata.strike) == atm ? true : false}
+            strike={_opdata.strike}
+            ce_token_obj={_opdata.ce_token_obj}
+            pe_token_obj={_opdata.pe_token_obj}
+            add_ltp_refs={add_ltp_refs}
+            key={_opdata.strike}
           ></OpStrike>
         );
       })}
