@@ -1,4 +1,4 @@
-//https://smartapi.angelbroking.com/publisher-login?api_key=xxx
+// https://smartapi.angelbroking.com/publisher-login?api_key=xxx
 import { useEffect, useState } from "react";
 import OptionChain from "./components/OptionChain";
 import Inputs from "./components/Inputs";

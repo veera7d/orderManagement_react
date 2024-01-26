@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import placeOrder from "../services/orders";
 
 interface Prop {
   strike: number;
@@ -25,6 +26,14 @@ const OpStrike = ({
       [pe_token_obj.token, pe_ref],
     ]);
   }, [ce_token_obj, pe_token_obj]);
+  function placeO(ce_pe: string, buy_sell: string) {
+    console.log("placeOrder", ce_pe, buy_sell);
+    placeOrder(
+      ce_pe === "CE" ? ce_token_obj : pe_token_obj,
+      buy_sell,
+      ce_token_obj.lotsize
+    );
+  }
   return (
     <>
       <div
@@ -40,6 +49,26 @@ const OpStrike = ({
           style={{ width: "400px" }}
         >
           DRAGABLE
+        </div>
+        <div>
+          <button
+            className="btn btn-success"
+            onClick={() => {
+              placeO("PE", "BUY");
+            }}
+          >
+            B
+          </button>
+        </div>
+        <div>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              placeO("PE", "SELL");
+            }}
+          >
+            S
+          </button>
         </div>
         <div
           ref={ce_ref}
@@ -60,6 +89,26 @@ const OpStrike = ({
           style={{ width: "70px" }}
         >
           LTP
+        </div>
+        <div>
+          <button
+            className="btn btn-success"
+            onClick={() => {
+              placeO("CE", "BUY");
+            }}
+          >
+            B
+          </button>
+        </div>
+        <div>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              placeO("CE", "SELL");
+            }}
+          >
+            S
+          </button>
         </div>
         <div
           className="text-start border border-primary border-opacity-50 rounded"
