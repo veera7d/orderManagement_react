@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import placeOrder from "../services/orders";
 
 interface Prop {
+  script: string;
   strike: number;
   isatm: boolean;
   ce_token_obj: any;
@@ -11,6 +12,7 @@ interface Prop {
 }
 
 const OpStrike = ({
+  script,
   strike,
   isatm,
   ce_token_obj,
@@ -20,6 +22,10 @@ const OpStrike = ({
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
+  const [freezQty, setFreezQty] = useState<{ [key: string]: number }>({
+    NIFTY: 36,
+    BANKNIFTY: 60,
+  });
   useEffect(() => {
     if (ce_token_obj === null || ce_token_obj === undefined) return;
     if (ce_token_obj.ltp === null || ce_token_obj.ltp === undefined) return;
@@ -29,12 +35,21 @@ const OpStrike = ({
     ]);
   }, [ce_token_obj, pe_token_obj]);
   function placeO(ce_pe: string, buy_sell: string, lot: number = quickLotSize) {
-    console.log("placeOrder", ce_pe, buy_sell, lot);
+    let rem = lot%freezQty[script];
+    let no_orders = (lot-rem)/freezQty[script];
+    console.log("placeOrder", ce_pe, buy_sell,no_orders, rem);
     placeOrder(
       ce_pe === "CE" ? ce_token_obj : pe_token_obj,
       buy_sell,
-      ce_token_obj.lotsize * lot
+      ce_token_obj.lotsize * rem
     );
+    for(let i=0; i<no_orders; i++){
+      placeOrder(
+        ce_pe === "CE" ? ce_token_obj : pe_token_obj,
+        buy_sell,
+        ce_token_obj.lotsize * freezQty[script]
+      );
+    }
   }
   return (
     <>

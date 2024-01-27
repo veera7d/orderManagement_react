@@ -65,7 +65,7 @@ function App() {
       atm: 21000,
       step: 50,
       token_obj: nifty_token_obj,
-      unique_expirys: [],
+      unique_expirys: []
     },
     {
       script: "BANKNIFTY",
@@ -73,7 +73,7 @@ function App() {
       atm: 45000,
       step: 100,
       token_obj: banknifty_token_obj,
-      unique_expirys: [],
+      unique_expirys: []
     },
   ]);
   const [nifty_data, setNifty_data] = useState<any[]>([]);
