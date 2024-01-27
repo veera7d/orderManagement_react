@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import OpStrike from "./OpStrike";
 interface data_i {
   script: string;
@@ -24,6 +24,7 @@ const OptionChain = ({
   add_ltp_refs,
 }: data_i) => {
   const [opdata, setOpdata] = useState<opdata_i[]>([]);
+  const [quickLotSize, setQuickLotSize] = useState<number>(1);
   useEffect(() => {
     let op_data_temp: any = [];
     const uniqueStrikeValues = new Set();
@@ -56,6 +57,23 @@ const OptionChain = ({
   }, [active_oc_data]);
   return (
     <>
+      <form>
+        <label>Quick Lot Size</label>
+        <input
+          type="number"
+          defaultValue={1}
+          min={1}
+          onChange={(e) => {
+            setQuickLotSize(parseInt(e.target.value));
+          }}
+        ></input>
+      </form>
+      <table style={{border: "1px solid",width: "100%"}}>
+        <tr>
+          <th style={{border: "1px solid",padding: "0px 25% 0px 25%"}}>CE</th>
+          <th style={{border: "1px solid",padding: "0px 25% 0px 25%"}}>PE</th>
+        </tr>
+      </table>
       {opdata.map((_opdata: any) => {
         return (
           <OpStrike
@@ -65,6 +83,7 @@ const OptionChain = ({
             pe_token_obj={_opdata.pe_token_obj}
             add_ltp_refs={add_ltp_refs}
             key={_opdata.strike}
+            quickLotSize={quickLotSize}
           ></OpStrike>
         );
       })}
