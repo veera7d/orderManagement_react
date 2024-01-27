@@ -68,15 +68,20 @@ const OptionChain = ({
           }}
         ></input>
       </form>
-      <table style={{border: "1px solid",width: "100%"}}>
+      <table style={{ border: "1px solid", width: "100%" }}>
         <tr>
-          <th style={{border: "1px solid",padding: "0px 25% 0px 25%"}}>CE</th>
-          <th style={{border: "1px solid",padding: "0px 25% 0px 25%"}}>PE</th>
+          <th style={{ border: "1px solid", padding: "0px 25% 0px 25%" }}>
+            CE
+          </th>
+          <th style={{ border: "1px solid", padding: "0px 25% 0px 25%" }}>
+            PE
+          </th>
         </tr>
       </table>
       {opdata.map((_opdata: any) => {
         return (
           <OpStrike
+            script={script}
             isatm={parseInt(_opdata.strike) == atm ? true : false}
             strike={_opdata.strike}
             ce_token_obj={_opdata.ce_token_obj}
