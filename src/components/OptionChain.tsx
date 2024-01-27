@@ -23,6 +23,10 @@ const OptionChain = ({
   active_oc_data,
   add_ltp_refs,
 }: data_i) => {
+  const freezQty = {
+    NIFTY: 36,
+    BANKNIFTY: 60,
+  };
   const [opdata, setOpdata] = useState<opdata_i[]>([]);
   const [quickLotSize, setQuickLotSize] = useState<number>(1);
   useEffect(() => {
@@ -69,14 +73,16 @@ const OptionChain = ({
         ></input>
       </form>
       <table style={{ border: "1px solid", width: "100%" }}>
-        <tr>
-          <th style={{ border: "1px solid", padding: "0px 25% 0px 25%" }}>
-            CE
-          </th>
-          <th style={{ border: "1px solid", padding: "0px 25% 0px 25%" }}>
-            PE
-          </th>
-        </tr>
+        <thead>
+          <tr>
+            <th style={{ border: "1px solid", padding: "0px 25% 0px 25%" }}>
+              CE
+            </th>
+            <th style={{ border: "1px solid", padding: "0px 25% 0px 25%" }}>
+              PE
+            </th>
+          </tr>
+        </thead>
       </table>
       {opdata.map((_opdata: any) => {
         return (
@@ -89,6 +95,7 @@ const OptionChain = ({
             add_ltp_refs={add_ltp_refs}
             key={_opdata.strike}
             quickLotSize={quickLotSize}
+            freezQty={freezQty}
           ></OpStrike>
         );
       })}
