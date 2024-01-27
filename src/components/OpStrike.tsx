@@ -7,6 +7,7 @@ interface Prop {
   ce_token_obj: any;
   pe_token_obj: any;
   add_ltp_refs: any;
+  quickLotSize: number;
 }
 
 const OpStrike = ({
@@ -15,6 +16,7 @@ const OpStrike = ({
   ce_token_obj,
   pe_token_obj,
   add_ltp_refs,
+  quickLotSize,
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
@@ -26,12 +28,12 @@ const OpStrike = ({
       [pe_token_obj.token, pe_ref],
     ]);
   }, [ce_token_obj, pe_token_obj]);
-  function placeO(ce_pe: string, buy_sell: string) {
-    console.log("placeOrder", ce_pe, buy_sell);
+  function placeO(ce_pe: string, buy_sell: string, lot: number = quickLotSize) {
+    console.log("placeOrder", ce_pe, buy_sell, lot);
     placeOrder(
       ce_pe === "CE" ? ce_token_obj : pe_token_obj,
       buy_sell,
-      ce_token_obj.lotsize
+      ce_token_obj.lotsize * lot
     );
   }
   return (
@@ -43,43 +45,62 @@ const OpStrike = ({
             : "border border-primary d-flex justify-content-center p-1 "
         }
       >
-        <p>{ce_token_obj && ce_token_obj.token + pe_token_obj.token}</p>
         <div
           className="text-end border border-primary border-opacity-50 rounded"
           style={{ width: "400px" }}
         >
           DRAGABLE
         </div>
-        <div>
+        <div style={{ padding: "2px" }}>
           <button
             className="btn btn-success"
             onClick={() => {
-              placeO("PE", "BUY");
+              placeO("CE", "BUY", 1);
             }}
           >
             B
           </button>
         </div>
-        <div>
+        <div style={{ padding: "2px" }}>
+          <button
+            className="btn btn-success"
+            onClick={() => {
+              placeO("CE", "BUY");
+            }}
+          >
+            {quickLotSize}
+          </button>
+        </div>
+        <div style={{ padding: "2px" }}>
           <button
             className="btn btn-danger"
             onClick={() => {
-              placeO("PE", "SELL");
+              placeO("CE", "SELL", 1);
             }}
           >
             S
           </button>
         </div>
+        <div style={{ padding: "2px" }}>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              placeO("CE", "SELL");
+            }}
+          >
+            {quickLotSize}
+          </button>
+        </div>
         <div
           ref={ce_ref}
           className="text-center border border-primary border-opacity-50 rounded"
-          style={{ width: "70px" }}
+          style={{ width: "70px", padding: "2px" }}
         >
           LTP
         </div>
         <div
           className="ext-center border border-primary border-opacity-50 rounded"
-          style={{ width: "70px" }}
+          style={{ width: "70px", padding: "2px" }}
         >
           {strike}
         </div>
@@ -90,29 +111,49 @@ const OpStrike = ({
         >
           LTP
         </div>
-        <div>
+        <div style={{ padding: "2px" }}>
           <button
             className="btn btn-success"
             onClick={() => {
-              placeO("CE", "BUY");
+              placeO("PE", "BUY", 1);
             }}
           >
             B
           </button>
         </div>
-        <div>
+        <div style={{ padding: "2px" }}>
+          <button
+            className="btn btn-success"
+            onClick={() => {
+              placeO("PE", "BUY");
+            }}
+          >
+            {quickLotSize}
+          </button>
+        </div>
+        <div style={{ padding: "2px" }}>
           <button
             className="btn btn-danger"
             onClick={() => {
-              placeO("CE", "SELL");
+              placeO("PE", "SELL", 1);
             }}
           >
             S
           </button>
         </div>
+        <div style={{ padding: "2px" }}>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              placeO("PE", "SELL");
+            }}
+          >
+            {quickLotSize}
+          </button>
+        </div>
         <div
           className="text-start border border-primary border-opacity-50 rounded"
-          style={{ width: "400px" }}
+          style={{ width: "400px", padding: "0px 2px 0px 2px" }}
         >
           DRAGABLE
         </div>
