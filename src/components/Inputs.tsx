@@ -20,7 +20,7 @@ const Inputs = ({
   const no_of_strikes_disp_ref = useRef<HTMLInputElement>(null);
   return (
     <>
-      <form>
+      <form onSubmit={(event)=>{event.preventDefault();}}>
         <select
           ref={script_input}
           onChange={() => {
@@ -52,7 +52,7 @@ const Inputs = ({
               select_no_strk(parseInt(no_of_strikes_disp_ref.current.value));
           }}
           min={1}
-          max={20}
+          max={100}
           defaultValue={10}
         ></input>
       </form>

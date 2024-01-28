@@ -65,7 +65,7 @@ function App() {
       atm: 21000,
       step: 50,
       token_obj: nifty_token_obj,
-      unique_expirys: []
+      unique_expirys: [],
     },
     {
       script: "BANKNIFTY",
@@ -73,7 +73,7 @@ function App() {
       atm: 45000,
       step: 100,
       token_obj: banknifty_token_obj,
-      unique_expirys: []
+      unique_expirys: [],
     },
   ]);
   const [nifty_data, setNifty_data] = useState<any[]>([]);
@@ -217,13 +217,14 @@ function App() {
   //<WebSocketC data={data.filter((d) => d.script === "NIFTY")[0]} />
   return (
     <>
-      <p>
-        {JSON.stringify(
-          data.filter((d) => d.script === "NIFTY")[0].unique_expirys
-        )}
-      </p>
+      {data.map((d) => {
+        return (
+          <p key={d.script}>
+            {d.script}: {d.ltp}
+          </p>
+        );
+      })}
       <p>ltp length: {JSON.stringify(ltp_ref)}</p>
-      <p>{active_exp}</p>
       <Inputs
         pscripts={data.map((d) => {
           return d.script;
@@ -237,13 +238,6 @@ function App() {
         select_no_strk={setNo_of_strikes_disp}
         setActive_exp={setActive_exp}
       ></Inputs>
-      {data.map((d) => {
-        return (
-          <p key={d.script}>
-            {d.script}: {d.ltp}
-          </p>
-        );
-      })}
       <OptionChain
         script={
           data.filter((d) => {
@@ -258,6 +252,7 @@ function App() {
         active_oc_data={active_oc_data}
         no_of_strikes_disp={no_of_strikes_disp}
         add_ltp_refs={add_ltp_refs}
+        data={data}
       />
     </>
   );
