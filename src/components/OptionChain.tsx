@@ -6,6 +6,7 @@ interface data_i {
   no_of_strikes_disp: number;
   active_oc_data: any;
   add_ltp_refs: any;
+  data: any;
 }
 
 interface opdata_i {
@@ -22,11 +23,13 @@ const OptionChain = ({
   no_of_strikes_disp,
   active_oc_data,
   add_ltp_refs,
+  data,
 }: data_i) => {
   const freezQty = {
     NIFTY: 36,
     BANKNIFTY: 60,
   };
+  const [openPositions, setOpenPositions] = useState<any[]>([]);
   const [opdata, setOpdata] = useState<opdata_i[]>([]);
   const [quickLotSize, setQuickLotSize] = useState<number>(1);
   useEffect(() => {
@@ -61,7 +64,7 @@ const OptionChain = ({
   }, [active_oc_data]);
   return (
     <>
-      <form>
+      <form onSubmit={(event)=>{event.preventDefault();}}>
         <label>Quick Lot Size</label>
         <input
           type="number"
@@ -85,6 +88,17 @@ const OptionChain = ({
         </thead>
       </table>
       {opdata.map((_opdata: any) => {
+        for(let i=0; i<data.length; i++){
+          if(data[i].script === script){
+            let temp = Math.abs((atm - _opdata.strike)) / data[i].step;
+            if(temp > no_of_strikes_disp) return;
+          }
+        }
+        data.forEach((element: any) => {
+          if (element.script === script) {
+            
+          }
+        });
         return (
           <OpStrike
             script={script}

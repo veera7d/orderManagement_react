@@ -20,7 +20,7 @@ const OpStrike = ({
   pe_token_obj,
   add_ltp_refs,
   quickLotSize,
-  freezQty
+  freezQty,
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
@@ -36,11 +36,13 @@ const OpStrike = ({
     let rem = lot % freezQty[script as keyof typeof freezQty];
     let no_orders = (lot - rem) / freezQty[script as keyof typeof freezQty];
     console.log("placeOrder", ce_pe, buy_sell, no_orders, rem);
-    placeOrder(
-      ce_pe === "CE" ? ce_token_obj : pe_token_obj,
-      buy_sell,
-      ce_token_obj.lotsize * rem
-    );
+    if (rem != 0) {
+      placeOrder(
+        ce_pe === "CE" ? ce_token_obj : pe_token_obj,
+        buy_sell,
+        ce_token_obj.lotsize * rem
+      );
+    }
     for (let i = 0; i < no_orders; i++) {
       placeOrder(
         ce_pe === "CE" ? ce_token_obj : pe_token_obj,
