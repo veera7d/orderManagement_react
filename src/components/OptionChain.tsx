@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { placeOrder, getPosition } from "../services/orders";
 import OpStrike from "./OpStrike";
 interface data_i {
   script: string;
@@ -62,9 +63,24 @@ const OptionChain = ({
     console.log("op_data_temp", op_data_temp.length);
     setOpdata(op_data_temp);
   }, [active_oc_data]);
+  useEffect(() => {
+    getPosition().then((data) => {
+      if (data === null || data === undefined) {
+        console.log("getPosition", data);
+        setOpenPositions([]);
+        return;
+      }
+      // console.log("getPosition", data);
+      setOpenPositions(data);
+    });
+  }, []);
   return (
     <>
-      <form onSubmit={(event)=>{event.preventDefault();}}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+        }}
+      >
         <label>Quick Lot Size</label>
         <input
           type="number"
@@ -75,6 +91,7 @@ const OptionChain = ({
           }}
         ></input>
       </form>
+      <p>{JSON.stringify(openPositions)}</p>
       <table style={{ border: "1px solid", width: "100%" }}>
         <thead>
           <tr>
@@ -88,17 +105,12 @@ const OptionChain = ({
         </thead>
       </table>
       {opdata.map((_opdata: any) => {
-        for(let i=0; i<data.length; i++){
-          if(data[i].script === script){
-            let temp = Math.abs((atm - _opdata.strike)) / data[i].step;
-            if(temp > no_of_strikes_disp) return;
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].script === script) {
+            let temp = Math.abs(atm - _opdata.strike) / data[i].step;
+            if (temp > no_of_strikes_disp) return;
           }
         }
-        data.forEach((element: any) => {
-          if (element.script === script) {
-            
-          }
-        });
         return (
           <OpStrike
             script={script}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import placeOrder from "../services/orders";
+import { placeOrder, getPosition } from "../services/orders";
 
 interface Prop {
   script: string;
@@ -26,12 +26,12 @@ const OpStrike = ({
   const pe_ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ce_token_obj === null || ce_token_obj === undefined) return;
-    if (ce_token_obj.ltp === null || ce_token_obj.ltp === undefined) return;
+    if (ce_token_obj.token === null || ce_token_obj.token === undefined) return;
     add_ltp_refs([
       [ce_token_obj.token, ce_ref],
       [pe_token_obj.token, pe_ref],
     ]);
-  }, [ce_token_obj, pe_token_obj]);
+  }, []);
   function placeO(ce_pe: string, buy_sell: string, lot: number = quickLotSize) {
     let rem = lot % freezQty[script as keyof typeof freezQty];
     let no_orders = (lot - rem) / freezQty[script as keyof typeof freezQty];
@@ -60,6 +60,7 @@ const OpStrike = ({
             : "border border-primary d-flex justify-content-center p-1 "
         }
       >
+        <p>{ce_token_obj && ce_token_obj.token}</p>
         <div
           className="text-end border border-primary border-opacity-50 rounded"
           style={{ width: "400px" }}
@@ -109,7 +110,7 @@ const OpStrike = ({
         <div
           ref={ce_ref}
           className="text-center border border-primary border-opacity-50 rounded"
-          style={{ width: "70px", padding: "2px" }}
+          style={{ width: "170px", padding: "2px" }}
         >
           LTP
         </div>
@@ -122,7 +123,7 @@ const OpStrike = ({
         <div
           ref={pe_ref}
           className="text-center border border-primary border-opacity-50 rounded"
-          style={{ width: "70px" }}
+          style={{ width: "170px" }}
         >
           LTP
         </div>
@@ -172,6 +173,7 @@ const OpStrike = ({
         >
           DRAGABLE
         </div>
+        <p>{pe_token_obj && pe_token_obj.token}</p>
       </div>
     </>
   );

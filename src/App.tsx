@@ -39,23 +39,30 @@ function App() {
     exch_seg: "NSE",
     tick_size: "0.000000",
   };
-  let ltp_ref: { [key: string]: any } = {};
+  const [ltp_ref, setLtp_ref] = useState<{ [key: string]: any }>({});
+  // let ltp_ref: { [key: string]: any } = {};
   function add_ltp_refs(ce_pe_ref: any) {
-    ce_pe_ref.forEach((ref: any) => {
-      ltp_ref[ref[0]] = ref[1];
+    setLtp_ref((ltp_ref) => {
+      return {
+        ...ltp_ref,
+        [ce_pe_ref[0][0]]: ce_pe_ref[0][1],
+        [ce_pe_ref[1][0]]: ce_pe_ref[1][1],
+      };
     });
+    // console.log("ce_pe_ref", ce_pe_ref, Object.keys(ltp_ref).length);
   }
-  useEffect(() => {
-    // console.log("ltp_ref", ltp_ref);
-  }, [ltp_ref]);
   let ltp_data_temp: { [key: string]: number } = {};
   function set_ltp_data_temp(token: string, ltp: number) {
     // ltp_data_temp[token] = ltp;
-    console.log("token", token, ltp);
-    if (!ltp_ref[token]) return;
+    token = token.slice(1, -1);
+    if (!ltp_ref[token]) {
+      // console.log("ltp_ref[token] not found", token, ltp);
+      return;
+    }
     if (ltp_ref[token].current === null || ltp_ref[token].current === undefined)
       return;
-    ltp_ref[token].current.innerHTML = ltp.toString();
+    // console.log("token", token, ltp, Object.keys(ltp_ref).length);
+    ltp_ref[token].current.innerHTML = ltp.toFixed(2).toString();
   }
   const [script, setScript] = useState<string>("NIFTY");
   const [data, setData] = useState<data_i[]>([
@@ -138,9 +145,10 @@ function App() {
 
   //subscribe to ltp
   useEffect(() => {
-    // for (let i in ltp_ref) {
-    //   delete ltp_ref[i];
-    // }
+    for (let i in ltp_ref) {
+      delete ltp_ref[i];
+      console.log("delete", i);
+    }
     if (active_oc_data.length > 0) {
       // console.log("active_oc_data", active_oc_data.length);
       unSubscribe_all(active_oc_data);
@@ -224,7 +232,7 @@ function App() {
           </p>
         );
       })}
-      <p>ltp length: {JSON.stringify(ltp_ref)}</p>
+      <p>ltp length: {Object.keys(ltp_ref).length}</p>
       <Inputs
         pscripts={data.map((d) => {
           return d.script;
