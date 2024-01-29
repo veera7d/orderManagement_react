@@ -24,7 +24,9 @@ const WebSocketC = (set_ltp_data_temp: any) => {
   }
   async function unSubscribe_all(token_obj_list: any) {
     if (token_obj_list === undefined || token_obj_list === null) return;
-    await sendMessage(JSON.stringify(build_websoc_ltpAllReq(token_obj_list)));
+    await sendMessage(
+      JSON.stringify(build_websoc_ltpAllReq(token_obj_list, false))
+    );
   }
   async function subscribe(token_obj: any) {
     if (token_obj === undefined || token_obj === null) return;
@@ -37,7 +39,7 @@ const WebSocketC = (set_ltp_data_temp: any) => {
 
   async function update_ltp_data(lastMessage: any) {
     let ltpdata = await get_ltp(lastMessage);
-    if(ltpdata === null || ltpdata === undefined) return;
+    if (ltpdata === null || ltpdata === undefined) return;
     // console.log("ltpdata", ltpdata);
     set_ltp_data_temp(ltpdata[0], ltpdata[1]);
     // setOc_ltp(

@@ -232,7 +232,6 @@ function App() {
           </p>
         );
       })}
-      <p>ltp length: {Object.keys(ltp_ref).length}</p>
       <Inputs
         pscripts={data.map((d) => {
           return d.script;
