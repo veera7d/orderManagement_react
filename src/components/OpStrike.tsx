@@ -10,6 +10,7 @@ interface Prop {
   add_ltp_refs: any;
   quickLotSize: number;
   freezQty: { [key: string]: number };
+  openPositions: any[];
 }
 
 const OpStrike = ({
@@ -21,9 +22,12 @@ const OpStrike = ({
   add_ltp_refs,
   quickLotSize,
   freezQty,
+  openPositions,
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
+  const [ce_pos, setCe_pos] = useState<any>({});
+  const [pe_pos, setPe_pos] = useState<any>({});
   useEffect(() => {
     if (ce_token_obj === null || ce_token_obj === undefined) return;
     if (ce_token_obj.token === null || ce_token_obj.token === undefined) return;
@@ -32,6 +36,18 @@ const OpStrike = ({
       [pe_token_obj.token, pe_ref],
     ]);
   }, []);
+  useEffect(() => {
+    setCe_pos(
+      openPositions.filter((d) => {
+        return d.token === ce_token_obj.token;
+      })[0]
+    );
+    setPe_pos(
+      openPositions.filter((d) => {
+        return d.token === pe_token_obj.token;
+      })[0]
+    );
+  }, [openPositions]);
   function placeO(ce_pe: string, buy_sell: string, lot: number = quickLotSize) {
     let rem = lot % freezQty[script as keyof typeof freezQty];
     let no_orders = (lot - rem) / freezQty[script as keyof typeof freezQty];
@@ -65,7 +81,8 @@ const OpStrike = ({
           className="text-end border border-primary border-opacity-50 rounded"
           style={{ width: "400px" }}
         >
-          DRAGABLE
+          {ce_pos &&
+            JSON.stringify({ buy: ce_pos.buyqty, sell: ce_pos.sellqty })}
         </div>
         <div style={{ padding: "2px" }}>
           <button
@@ -171,7 +188,8 @@ const OpStrike = ({
           className="text-start border border-primary border-opacity-50 rounded"
           style={{ width: "400px", padding: "0px 2px 0px 2px" }}
         >
-          DRAGABLE
+          {pe_pos &&
+            JSON.stringify({ buy: pe_pos.buyqty, sell: pe_pos.sellqty })}
         </div>
         <p>{pe_token_obj && pe_token_obj.token}</p>
       </div>

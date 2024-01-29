@@ -66,11 +66,18 @@ const OptionChain = ({
   useEffect(() => {
     getPosition().then((data) => {
       if (data === null || data === undefined) {
-        console.log("getPosition", data);
         setOpenPositions([]);
         return;
       }
-      // console.log("getPosition", data);
+      data = data.filter((item: any) => item.exchange === "NFO")
+      .map((item: any) => {
+        return {
+          token: item.symboltoken,
+          buyqty: item.buyqty,
+          sellqty: item.sellqty,
+        };
+      });
+      console.log("getPosition", data);
       setOpenPositions(data);
     });
   }, []);
@@ -91,6 +98,7 @@ const OptionChain = ({
           }}
         ></input>
       </form>
+      <p>{openPositions.toString()}</p>
       <p>{JSON.stringify(openPositions)}</p>
       <table style={{ border: "1px solid", width: "100%" }}>
         <thead>
@@ -122,6 +130,7 @@ const OptionChain = ({
             key={_opdata.strike}
             quickLotSize={quickLotSize}
             freezQty={freezQty}
+            openPositions={openPositions}
           ></OpStrike>
         );
       })}

@@ -32,6 +32,7 @@ export async function getPosition() {
     // if (response.message === "SUCCESS") {
     //   console.log(response.data);
     // }
+    // response.data
     return response.data;
   } catch (ex) {
     console.log("error while getting positions", ex);
