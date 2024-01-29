@@ -98,8 +98,6 @@ const OptionChain = ({
           }}
         ></input>
       </form>
-      <p>{openPositions.toString()}</p>
-      <p>{JSON.stringify(openPositions)}</p>
       <table style={{ border: "1px solid", width: "100%" }}>
         <thead>
           <tr>
