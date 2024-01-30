@@ -33,9 +33,7 @@ const OptionChain = ({
   const [openPositions, setOpenPositions] = useState<any[]>([]);
   const [opdata, setOpdata] = useState<opdata_i[]>([]);
   const [quickLotSize, setQuickLotSize] = useState<number>(1);
-  useEffect(() => {
-    console.log("no of strikes changed");
-  }, [no_of_strikes_disp]);
+  const [refresh, setRefresh] = useState<boolean>(false);
   useEffect(() => {
     let op_data_temp: any = [];
     const uniqueStrikeValues = new Set();
@@ -60,8 +58,6 @@ const OptionChain = ({
     op_data_temp.sort((obj1: opdata_i, obj2: opdata_i) => {
       return obj1.strike - obj2.strike;
     });
-    // console.log("active_oc_data", active_oc_data);
-    console.log("op_data_temp", op_data_temp.length);
     setOpdata(op_data_temp);
   }, [active_oc_data]);
   useEffect(() => {
@@ -102,6 +98,15 @@ const OptionChain = ({
           }}
         ></input>
       </form>
+      <label>Ltp not updating? HIT refresh button </label>
+      <button
+        className="btn btn-success"
+        onClick={() => {
+          setRefresh(!refresh);
+        }}
+      >
+        Refresh
+      </button>
       <table style={{ border: "1px solid", width: "100%" }}>
         <thead>
           <tr>
@@ -136,6 +141,7 @@ const OptionChain = ({
             freezQty={freezQty}
             openPositions={openPositions}
             no_of_strikes_disp={no_of_strikes_disp}
+            refresh={refresh}
           ></OpStrike>
         );
       })}

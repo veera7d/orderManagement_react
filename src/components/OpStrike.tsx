@@ -12,6 +12,7 @@ interface Prop {
   freezQty: { [key: string]: number };
   openPositions: any[];
   no_of_strikes_disp: number;
+  refresh: boolean;
 }
 
 const OpStrike = ({
@@ -25,6 +26,7 @@ const OpStrike = ({
   freezQty,
   openPositions,
   no_of_strikes_disp,
+  refresh
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
@@ -37,7 +39,7 @@ const OpStrike = ({
       [ce_token_obj.token, ce_ref],
       [pe_token_obj.token, pe_ref],
     ]);
-  }, [no_of_strikes_disp]);
+  }, [no_of_strikes_disp,refresh]);
   useEffect(() => {
     setCe_pos(
       openPositions.filter((d) => {
