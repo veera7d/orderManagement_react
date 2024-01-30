@@ -147,8 +147,8 @@ function App() {
   useEffect(() => {
     for (let i in ltp_ref) {
       delete ltp_ref[i];
-      console.log("delete", i);
     }
+    console.log("deleting ltp_ref");
     if (active_oc_data.length > 0) {
       // console.log("active_oc_data", active_oc_data.length);
       unSubscribe_all(active_oc_data);
@@ -189,7 +189,6 @@ function App() {
 
   useEffect(() => {
     if (active_oc_data.length > 0) {
-      console.log("active_oc_data", active_oc_data.length);
       subscribe_all(active_oc_data);
     }
   }, [active_oc_data]);

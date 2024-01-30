@@ -43,7 +43,7 @@ const Inputs = ({
             return <option key={exipre.toString()}>{exipre}</option>;
           })}
         </select>
-        <label>Number of strikes to dicplay</label>
+        <label>Number of strikes to display</label>
         <input
           type="number"
           ref={no_of_strikes_disp_ref}

@@ -58,7 +58,7 @@ const WebSocketC = (set_ltp_data_temp: any) => {
     if (lastMessage === null) return;
     //console.log("lastMessage", get_subscription_mode(lastMessage.data));
     if (lastMessage.data === "pong") {
-      console.log("pong");
+    //   console.log("pong");
       return;
     }
     update_ltp_data(lastMessage.data);
@@ -75,7 +75,7 @@ const WebSocketC = (set_ltp_data_temp: any) => {
     if (readyState === ReadyState.OPEN) {
       intervalId = setInterval(() => {
         sendMessage("ping");
-        console.log("ping");
+        // console.log("ping");
       }, 29 * 1000);
       //return () => clearInterval(intervalId); // Cleanup on unmount
     } else if (readyState === ReadyState.CLOSED) {

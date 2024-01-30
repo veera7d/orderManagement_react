@@ -11,6 +11,8 @@ interface Prop {
   quickLotSize: number;
   freezQty: { [key: string]: number };
   openPositions: any[];
+  no_of_strikes_disp: number;
+  refresh: boolean;
 }
 
 const OpStrike = ({
@@ -23,6 +25,8 @@ const OpStrike = ({
   quickLotSize,
   freezQty,
   openPositions,
+  no_of_strikes_disp,
+  refresh
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
@@ -35,7 +39,7 @@ const OpStrike = ({
       [ce_token_obj.token, ce_ref],
       [pe_token_obj.token, pe_ref],
     ]);
-  }, []);
+  }, [no_of_strikes_disp,refresh]);
   useEffect(() => {
     setCe_pos(
       openPositions.filter((d) => {
@@ -75,6 +79,7 @@ const OpStrike = ({
             ? "border border-primary d-flex justify-content-center p-1 bg-info-subtle text-emphasis-info"
             : "border border-primary d-flex justify-content-center p-1 "
         }
+        style={{ height: "50px" }}
       >
         <p>{ce_token_obj && ce_token_obj.token}</p>
         <div
@@ -84,7 +89,7 @@ const OpStrike = ({
           {ce_pos &&
             JSON.stringify({ buy: ce_pos.buyqty, sell: ce_pos.sellqty })}
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-success"
             onClick={() => {
@@ -94,7 +99,7 @@ const OpStrike = ({
             B
           </button>
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-success"
             onClick={() => {
@@ -104,7 +109,7 @@ const OpStrike = ({
             {quickLotSize}
           </button>
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-danger"
             onClick={() => {
@@ -114,7 +119,7 @@ const OpStrike = ({
             S
           </button>
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-danger"
             onClick={() => {
@@ -127,13 +132,13 @@ const OpStrike = ({
         <div
           ref={ce_ref}
           className="text-center border border-primary border-opacity-50 rounded"
-          style={{ width: "170px", padding: "2px" }}
+          style={{ width: "170px", padding: "0px 2px 0px 2px" }}
         >
           LTP
         </div>
         <div
           className="ext-center border border-primary border-opacity-50 rounded"
-          style={{ width: "70px", padding: "2px" }}
+          style={{ width: "70px", padding: "0px 2px 0px 2px" }}
         >
           {strike}
         </div>
@@ -144,7 +149,7 @@ const OpStrike = ({
         >
           LTP
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-success"
             onClick={() => {
@@ -154,7 +159,7 @@ const OpStrike = ({
             B
           </button>
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-success"
             onClick={() => {
@@ -164,7 +169,7 @@ const OpStrike = ({
             {quickLotSize}
           </button>
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-danger"
             onClick={() => {
@@ -174,7 +179,7 @@ const OpStrike = ({
             S
           </button>
         </div>
-        <div style={{ padding: "2px" }}>
+        <div style={{ padding: "0px 2px 0px 2px" }}>
           <button
             className="btn btn-danger"
             onClick={() => {
