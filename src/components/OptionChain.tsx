@@ -34,6 +34,9 @@ const OptionChain = ({
   const [opdata, setOpdata] = useState<opdata_i[]>([]);
   const [quickLotSize, setQuickLotSize] = useState<number>(1);
   useEffect(() => {
+    console.log("no of strikes changed");
+  }, [no_of_strikes_disp]);
+  useEffect(() => {
     let op_data_temp: any = [];
     const uniqueStrikeValues = new Set();
     active_oc_data.forEach((obj: any) => uniqueStrikeValues.add(obj.strike));
@@ -41,8 +44,6 @@ const OptionChain = ({
     uniqueStrikeValuesArray.forEach((strike: any) => {
       op_data_temp.push({
         strike: strike / 100,
-        ce_ltp: 0,
-        pe_ltp: 0,
         ce_token_obj: null,
         pe_token_obj: null,
       });
@@ -64,22 +65,25 @@ const OptionChain = ({
     setOpdata(op_data_temp);
   }, [active_oc_data]);
   useEffect(() => {
-    getPosition().then((data) => {
-      if (data === null || data === undefined) {
-        setOpenPositions([]);
-        return;
-      }
-      data = data.filter((item: any) => item.exchange === "NFO")
-      .map((item: any) => {
-        return {
-          token: item.symboltoken,
-          buyqty: item.buyqty,
-          sellqty: item.sellqty,
-        };
+    setInterval(() => {
+      getPosition().then((data) => {
+        if (data === null || data === undefined) {
+          setOpenPositions([]);
+          return;
+        }
+        data = data
+          .filter((item: any) => item.exchange === "NFO")
+          .map((item: any) => {
+            return {
+              token: item.symboltoken,
+              buyqty: item.buyqty,
+              sellqty: item.sellqty,
+            };
+          });
+        // console.log("getPosition", data);
+        setOpenPositions(data);
       });
-      console.log("getPosition", data);
-      setOpenPositions(data);
-    });
+    }, import.meta.env.VITE_POSTIONS_UPDATE_FREQUENCY_SEC * 1000);
   }, []);
   return (
     <>
@@ -114,7 +118,9 @@ const OptionChain = ({
         for (let i = 0; i < data.length; i++) {
           if (data[i].script === script) {
             let temp = Math.abs(atm - _opdata.strike) / data[i].step;
-            if (temp > no_of_strikes_disp) return;
+            if (temp > no_of_strikes_disp) {
+              return;
+            }
           }
         }
         return (
@@ -129,6 +135,7 @@ const OptionChain = ({
             quickLotSize={quickLotSize}
             freezQty={freezQty}
             openPositions={openPositions}
+            no_of_strikes_disp={no_of_strikes_disp}
           ></OpStrike>
         );
       })}
