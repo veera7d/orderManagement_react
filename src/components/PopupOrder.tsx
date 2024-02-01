@@ -36,7 +36,7 @@ const PopupOrder = ({
             onSubmit={(event) => {
               setShowPopup(false);
               set_ShowPopup(false);
-              placeO("PE", "BUY", numberValue);
+              placeO(ce_pe, buy_sell, numberValue);
               event.preventDefault();
             }}
           >
