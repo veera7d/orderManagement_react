@@ -20,6 +20,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-use-websocket": "^4.5.0",
+    "reactjs-popup": "^2.0.6",
     "smartapi-javascript": "^1.0.20",
     "ws": "^8.16.0"
   },
