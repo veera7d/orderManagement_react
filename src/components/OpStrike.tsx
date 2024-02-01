@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { placeOrder, getPosition } from "../services/orders";
+import Popup from "reactjs-popup";
+import PopupOrder from "./PopupOrder";
 
 interface Prop {
   script: string;
@@ -26,12 +28,15 @@ const OpStrike = ({
   freezQty,
   openPositions,
   no_of_strikes_disp,
-  refresh
+  refresh,
 }: Prop) => {
   const ce_ref = useRef<HTMLDivElement>(null);
   const pe_ref = useRef<HTMLDivElement>(null);
   const [ce_pos, setCe_pos] = useState<any>({});
   const [pe_pos, setPe_pos] = useState<any>({});
+  const [showPopup, setShowPopup] = useState(false);
+  const [ce_pe, setCe_pe] = useState<string>("");
+  const [buy_sell, setBuy_sell] = useState<string>("");
   useEffect(() => {
     if (ce_token_obj === null || ce_token_obj === undefined) return;
     if (ce_token_obj.token === null || ce_token_obj.token === undefined) return;
@@ -39,7 +44,7 @@ const OpStrike = ({
       [ce_token_obj.token, ce_ref],
       [pe_token_obj.token, pe_ref],
     ]);
-  }, [no_of_strikes_disp,refresh]);
+  }, [no_of_strikes_disp, refresh]);
   useEffect(() => {
     setCe_pos(
       openPositions.filter((d) => {
@@ -73,6 +78,13 @@ const OpStrike = ({
   }
   return (
     <>
+      <PopupOrder
+        placeO={placeO}
+        enablepopup={showPopup}
+        buy_sell={buy_sell}
+        ce_pe={ce_pe}
+        set_ShowPopup={setShowPopup}
+      />
       <div
         className={
           isatm
@@ -93,7 +105,10 @@ const OpStrike = ({
           <button
             className="btn btn-success"
             onClick={() => {
-              placeO("CE", "BUY", 1);
+              setCe_pe("CE");
+              setBuy_sell("BUY");
+              setShowPopup(true);
+              // placeO("CE", "BUY", 1);
             }}
           >
             B
@@ -113,7 +128,10 @@ const OpStrike = ({
           <button
             className="btn btn-danger"
             onClick={() => {
-              placeO("CE", "SELL", 1);
+              setCe_pe("CE");
+              setBuy_sell("SELL");
+              setShowPopup(true);
+              // placeO("CE", "SELL", 1);
             }}
           >
             S
@@ -153,7 +171,10 @@ const OpStrike = ({
           <button
             className="btn btn-success"
             onClick={() => {
-              placeO("PE", "BUY", 1);
+              setCe_pe("PE");
+              setBuy_sell("BUY");
+              setShowPopup(true);
+              // placeO("PE", "BUY", 1);
             }}
           >
             B
@@ -173,7 +194,10 @@ const OpStrike = ({
           <button
             className="btn btn-danger"
             onClick={() => {
-              placeO("PE", "SELL", 1);
+              setCe_pe("PE");
+              setBuy_sell("SELL");
+              setShowPopup(true);
+              // placeO("PE", "SELL", 1);
             }}
           >
             S
